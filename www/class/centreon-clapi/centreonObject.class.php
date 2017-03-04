@@ -49,6 +49,7 @@ abstract class CentreonObject
     const UNKNOWN_METHOD = "Method not implemented into Centreon API";
     const NAMEALREADYINUSE = "Name is already in use";
     const NB_UPDATE_PARAMS = 3;
+    const NB_GET_PARAMS = 2;
     const UNKNOWNPARAMETER = "Unknown parameter";
     const OBJECTALREADYLINKED = "Objects already linked";
     const OBJECTNOTLINKED = "Objects are not linked";
@@ -277,6 +278,24 @@ abstract class CentreonObject
                 $params
             );
         }
+    }
+
+    /**
+     * Get Param
+     *
+     * @param int $objectId
+     * @param array $params
+     * @param array to convert result or null
+     */
+    public function getparam($objectId, $params, $tabConvert = null)
+    {
+        $p = $this->object->getParameters($objectId, $params);
+        if ($tabConvert) {
+            $result = $tabConvert[$p[$params[0]]];
+        } else {
+            $result = $p[$params[0]];
+        }
+        echo $params[0].$this->delim.$result."\n";
     }
 
     /**
