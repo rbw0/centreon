@@ -189,6 +189,41 @@ class CentreonCommand extends CentreonObject
     }
 
     /**
+     * Get parameters
+     *
+     * @param string $parameters
+     * @return array parameters
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) != self::NB_GET_PARAMS) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        if (($objectId = $this->getObjectId($params[self::ORDER_UNIQUENAME])) != 0) {
+            $canGetProperty = false;
+            $needConvertion = false;
+            foreach ($this->insertParams as $item) {
+                if (strpos($item, $params[1]) > 0) {
+                    $getParams = array("command_".$params[1]);
+                    $canGetProperty = true;
+                }
+            }
+            if (!$canGetProperty) {
+                throw new CentreonClapiException(self::UNKNOWN_METHOD);
+            }
+            if ($params[1] == "type") {
+                parent::getparam($objectId, $getParams, $this->typeConversion);
+            } else {
+                parent::getparam($objectId, $getParams);
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
+    }
+
+    /**
      * Returns command id
      *
      * @param string $commandName
